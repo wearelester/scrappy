@@ -1,59 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tool Scraper</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
-        input, button {
-            padding: 10px;
-            margin: 5px;
-        }
-        pre {
-            background: #f4f4f4;
-            padding: 10px;
-            border: 1px solid #ddd;
-            white-space: pre-wrap;
-        }
-    </style>
+    <title>AI Tool Searcher</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Tool Scraper</h1>
-    <input type="text" id="term" placeholder="Enter a search term" />
-    <button onclick="fetchData()">Search</button>
-    <pre id="results">Results will appear here...</pre>
-
-    <script>
-        async function fetchData() {
-            const term = document.getElementById('term').value;
-            const proxyUrl = 'https://cors-anywhere.herokuapp.com/';
-            const targetUrl = `https://theresanaiforthat.com/`;
-            
-            try {
-                // Show a loading message
-                document.getElementById('results').textContent = 'Loading...';
-
-                // Make the request using the proxy
-                const response = await fetch(proxyUrl + targetUrl);
-                
-                // Ensure the request was successful
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
-                }
-
-                // Get the response text (HTML content of the page)
-                const data = await response.text();
-
-                // Display the raw HTML as the result
-                document.getElementById('results').textContent = data;
-            } catch (error) {
-                document.getElementById('results').textContent = 'Error: ' + error.message;
-            }
-        }
-    </script>
+    <h1>Búsqueda de Herramientas de AI en Español</h1>
+    <input type="text" id="searchInput" placeholder="Ingrese palabra clave...">
+    <button onclick="searchTools()">Buscar</button>
+    <div id="results"></div>
+    <script src="script.js"></script>
 </body>
 </html>
