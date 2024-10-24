@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Búsqueda de Herramientas</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: #f4f4f4; }
+        .container { max-width: 600px; margin: 0 auto; background: #fff; padding: 20px; border-radius: 8px; }
+        input[type="text"] { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 4px; }
+        button { padding: 10px 15px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        .results { margin-top: 20px; }
+        .result-item { padding: 10px; border-bottom: 1px solid #ddd; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Busca Herramientas en Español</h2>
+        <input type="text" id="search-term" placeholder="Ingresa un término de búsqueda (opcional)..." />
+        <button onclick="searchTools()">Buscar</button>
+        <div class="results" id="results"></div>
+        <!-- Iframe to load external content -->
+        <iframe id="scrape-frame" style="display:none; width: 100%; height: 500px;"></iframe>
+    </div>
+
+    <script>
+        function searchTools() {
+            const searchTerm = document.getElementById('search-term').value.toLowerCase();
+            const iframe = document.getElementById('scrape-frame');
+            const resultsContainer = document.getElementById('results');
+            resultsContainer.innerHTML = '';
+
+            if (!searchTerm) {
+                resultsContainer.innerHTML = '<p>Por favor, ingresa un término de búsqueda.</p>';
+                return;
+            }
+
+            // Attempt to load the websites inside the iframe
+            const urls = [
+                'https://theresanaiforthat.com/',
+                'https://www.producthunt.com/'
+            ];
+
+            urls.forEach(url => {
+                iframe.src = url;
+
+                iframe.onload = function() {
+                    try {
+                        const doc = iframe.contentDocument || iframe.contentWindow.document;
+                        const links = doc.querySelectorAll('a');
+                        const tools = [];
+
+                        links.forEach(link => {
+                            const name = link.textContent.trim();
+                            const href = link.href;
+
+                            // Only include links that contain the search term
+                            if (name.toLowerCase().includes(searchTerm)) {
+                                tools.push({ name, link: href });
+                            }
+                        });
+
+                        resultsContainer.innerHTML += `<h3>Resultados de ${url}:</h3>`;
+                        if (tools.length > 0) {
+                            tools.forEach(tool => {
+                                resultsContainer.innerHTML += `<div class="result-item">
+                                    <a href="${tool.link}" target="_blank">${tool.name}</a>
+                                </div>`;
+                            });
+                        } else {
+                            resultsContainer.innerHTML += '<p>No se encontraron resultados.</p>';
+                        }
+                    } catch (error) {
+                        resultsContainer.innerHTML += `<p>No se pudo acceder al contenido de ${url} debido a restricciones de seguridad (CORS).</p>`;
+                    }
+                };
+            });
+        }
+    </script>
+</body>
+</html>
